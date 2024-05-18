@@ -6,16 +6,17 @@
 
 
 import random
-zeroC = 99999999
-multiC = 1
+zeroC = 0
+multiC = 0
 K = int(input("Введите К="))
 N = int(input("Введите N="))
 n = 1
+wall = -1
 save = 0
 """формируем матрици размеров N/2 с случайными значением от -10 до 10"""
 D =  [[random.randint(-10,10 ) for j in range(N//2)] for i in range(N//2)]
 E =  [[random.randint(-10,10 ) for j in range(N//2)] for i in range(N//2)]
-C =  [[random.randint(-10,10 ) for j in range(N//2)] for i in range(N//2)]
+C =  [[random.randint(0,0 ) for j in range(N//2)] for i in range(N//2)]
 B =  [[random.randint(-10,10 ) for j in range(N//2)] for i in range(N//2)]
 G = [ [0]*((N//2)*2) for i in range((N//2)*2) ]
 H = [ [0]*((N//2)*2) for i in range((N//2)*2) ]
@@ -23,24 +24,30 @@ A = [D[i] + E[i]  for i in range(N//2)]
 A += [C[i] + B[i] for i in range(N//2)]
 print("матрица A\n",A,"\n\n")
 
-for i in range(0,len(C)):
-    for j in range(0,len(C[i])):
+for i in range((N//2)-1,(N//4)-1,-1): #количество нулей в ячейках с четной суммой индексов в области 1
+    wall += 1
+    for j in range(1+wall , (N//2)-wall-1):
 
-        if i < j and i > ((N//2)-1-j) and (i + j) % 2 == 0 and C[i][j] == 0:
+        if  j < i and j > ((N//2) - 1) - i and C[j][i] == 0 and (j+i) % 2 == 0:
             zeroC += 1
-        else:
-            continue
+wall = -1
+
 print (f'\n\nколичество нулей области 1 {zeroC}')
-for i in range((N//4)+1,N//2):
-    for j in range(0,len(C[i])):
+for i in range(  ( (N//4) + 2 ) + wall, N//2 ):
+    wall += 1
+    for j in range( ( ( (N//4) -1  ) - wall ),( ( N//4 ) + 1 ) + wall ):
 
         if j == (i - 1):
             multiC *= C[i][j] * C[i][j-n]
             n += 2
 print(f'\n\nпроизведение по периметру треугольника {multiC}')
 if zeroC > multiC:
-    for i in range((N//4) + 1,N//2):
-        for j in range(0, len(C[i])):
+
+    wall = -1
+    for i in range((N // 2) - 1, N // 4, -1):
+        wall += 1
+
+        for j in range(1 + wall, (N // 2) - wall - 1):
             if i > j and i > ((N//2)-1)-j:
                 save = C[i][j]
                 C[i][j]=C[j][i]
